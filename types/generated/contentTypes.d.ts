@@ -888,7 +888,7 @@ export interface ApiCustomClientCustomClient extends Schema.CollectionType {
   info: {
     singularName: 'custom-client';
     pluralName: 'custom-clients';
-    displayName: 'custom_client';
+    displayName: 'custom_user';
     description: '';
   };
   options: {
