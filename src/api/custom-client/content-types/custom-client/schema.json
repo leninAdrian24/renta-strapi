@@ -1,0 +1,70 @@
+{
+  "kind": "collectionType",
+  "collectionName": "custom_clients",
+  "info": {
+    "singularName": "custom-client",
+    "pluralName": "custom-clients",
+    "displayName": "custom_client"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "username": {
+      "type": "string",
+      "required": true,
+      "minLength": 3,
+      "maxLength": 16,
+      "unique": true
+    },
+    "name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 255,
+      "minLength": 5
+    },
+    "last_name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 255,
+      "minLength": 5
+    },
+    "email": {
+      "type": "email",
+      "required": true,
+      "unique": true
+    },
+    "password": {
+      "type": "password",
+      "required": true
+    },
+    "telefono": {
+      "type": "biginteger",
+      "required": true
+    },
+    "direccion": {
+      "type": "richtext",
+      "required": true
+    },
+    "perfil": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": true,
+      "required": true
+    },
+    "creation_date": {
+      "type": "date"
+    },
+    "estado": {
+      "type": "enumeration",
+      "enum": [
+        "Activo",
+        "Inactivo"
+      ],
+      "required": true
+    }
+  }
+}
