@@ -4,7 +4,8 @@
   "info": {
     "singularName": "custom-client",
     "pluralName": "custom-clients",
-    "displayName": "custom_client"
+    "displayName": "custom_client",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -48,12 +49,12 @@
       "required": true
     },
     "perfil": {
-      "allowedTypes": [
-        "images"
-      ],
       "type": "media",
       "multiple": true,
-      "required": true
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
     },
     "creation_date": {
       "type": "date"
@@ -61,8 +62,8 @@
     "estado": {
       "type": "enumeration",
       "enum": [
-        "Activo",
-        "Inactivo"
+        "activo",
+        "inactivo"
       ],
       "required": true
     }

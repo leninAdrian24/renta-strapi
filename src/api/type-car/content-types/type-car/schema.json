@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "type_cars",
+  "info": {
+    "singularName": "type-car",
+    "pluralName": "type-cars",
+    "displayName": "type_car"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "type_car": {
+      "type": "string",
+      "required": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "activo",
+        "inactivo"
+      ]
+    },
+    "date": {
+      "type": "datetime"
+    }
+  }
+}
