@@ -14,21 +14,23 @@
   "attributes": {
     "symbol": {
       "type": "string",
-      "required": true
+      "required": true,
+      "minLength": 1,
+      "maxLength": 15
     },
     "name": {
       "type": "string",
-      "required": true
-    },
-    "date": {
-      "type": "datetime"
+      "required": true,
+      "minLength": 5,
+      "maxLength": 50
     },
     "status": {
       "type": "enumeration",
       "enum": [
-        "activo",
-        "inactivo"
-      ]
+        "active",
+        "inactive"
+      ],
+      "required": true
     }
   }
 }

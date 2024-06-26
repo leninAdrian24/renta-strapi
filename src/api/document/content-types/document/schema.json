@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "type_cars",
+  "collectionName": "documents",
   "info": {
-    "singularName": "type-car",
-    "pluralName": "type-cars",
-    "displayName": "type_car",
+    "singularName": "document",
+    "pluralName": "documents",
+    "displayName": "Document",
     "description": ""
   },
   "options": {
@@ -12,11 +12,11 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "type": {
+    "document": {
       "type": "string",
       "required": true,
-      "minLength": 5,
-      "maxLength": 100
+      "minLength": 3,
+      "maxLength": 50
     },
     "status": {
       "type": "enumeration",

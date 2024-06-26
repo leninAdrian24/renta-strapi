@@ -590,6 +590,53 @@ export interface PluginContentReleasesReleaseAction
   };
 }
 
+export interface PluginI18NLocale extends Schema.CollectionType {
+  collectionName: 'i18n_locale';
+  info: {
+    singularName: 'locale';
+    pluralName: 'locales';
+    collectionName: 'locales';
+    displayName: 'Locale';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
+  };
+  attributes: {
+    name: Attribute.String &
+      Attribute.SetMinMax<
+        {
+          min: 1;
+          max: 50;
+        },
+        number
+      >;
+    code: Attribute.String & Attribute.Unique;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'plugin::i18n.locale',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'plugin::i18n.locale',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface PluginUsersPermissionsPermission
   extends Schema.CollectionType {
   collectionName: 'up_permissions';
@@ -695,7 +742,6 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
   options: {
     draftAndPublish: false;
-    timestamps: true;
   };
   attributes: {
     username: Attribute.String &
@@ -724,63 +770,44 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.role'
     >;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'plugin::users-permissions.user',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'plugin::users-permissions.user',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
-export interface PluginI18NLocale extends Schema.CollectionType {
-  collectionName: 'i18n_locale';
-  info: {
-    singularName: 'locale';
-    pluralName: 'locales';
-    collectionName: 'locales';
-    displayName: 'Locale';
-    description: '';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  pluginOptions: {
-    'content-manager': {
-      visible: false;
-    };
-    'content-type-builder': {
-      visible: false;
-    };
-  };
-  attributes: {
     name: Attribute.String &
+      Attribute.Required &
+      Attribute.SetMinMaxLength<{
+        minLength: 3;
+        maxLength: 50;
+      }>;
+    last_name: Attribute.String &
+      Attribute.Required &
+      Attribute.SetMinMaxLength<{
+        minLength: 3;
+        maxLength: 255;
+      }>;
+    phone: Attribute.BigInteger &
+      Attribute.Required &
       Attribute.SetMinMax<
         {
-          min: 1;
-          max: 50;
+          min: '1111111111';
+          max: '9999999999';
         },
-        number
+        string
       >;
-    code: Attribute.String & Attribute.Unique;
+    address: Attribute.String &
+      Attribute.Required &
+      Attribute.SetMinMaxLength<{
+        minLength: 5;
+        maxLength: 255;
+      }>;
+    profile: Attribute.Media<'images', true>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
-      'plugin::i18n.locale',
+      'plugin::users-permissions.user',
       'oneToOne',
       'admin::user'
     > &
       Attribute.Private;
     updatedBy: Attribute.Relation<
-      'plugin::i18n.locale',
+      'plugin::users-permissions.user',
       'oneToOne',
       'admin::user'
     > &
@@ -794,15 +821,18 @@ export interface ApiBrandBrand extends Schema.CollectionType {
     singularName: 'brand';
     pluralName: 'brands';
     displayName: 'brand';
-    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    brand: Attribute.String & Attribute.Required;
-    status: Attribute.Enumeration<['activo', 'inactivo']>;
-    date: Attribute.DateTime & Attribute.Required;
+    brand: Attribute.String &
+      Attribute.Required &
+      Attribute.SetMinMaxLength<{
+        minLength: 3;
+        maxLength: 50;
+      }>;
+    status: Attribute.Enumeration<['active', 'inactive']>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -833,18 +863,139 @@ export interface ApiCarCar extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
-    placa: Attribute.String & Attribute.Required;
-    model: Attribute.String & Attribute.Required;
+    plate: Attribute.String &
+      Attribute.Required &
+      Attribute.SetMinMaxLength<{
+        minLength: 3;
+        maxLength: 20;
+      }>;
+    model: Attribute.String &
+      Attribute.Required &
+      Attribute.Private &
+      Attribute.SetMinMaxLength<{
+        minLength: 3;
+        maxLength: 50;
+      }>;
     image: Attribute.Media<'images', true>;
-    date: Attribute.DateTime;
-    estado: Attribute.Enumeration<['activo', 'inactivo']> &
-      Attribute.DefaultTo<'activo'>;
+    status: Attribute.Enumeration<['active', 'inactive']> & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<'api::car.car', 'oneToOne', 'admin::user'> &
       Attribute.Private;
     updatedBy: Attribute.Relation<'api::car.car', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
+export interface ApiClientClient extends Schema.CollectionType {
+  collectionName: 'clients';
+  info: {
+    singularName: 'client';
+    pluralName: 'clients';
+    displayName: 'Client';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String &
+      Attribute.Required &
+      Attribute.Private &
+      Attribute.SetMinMaxLength<{
+        minLength: 3;
+        maxLength: 255;
+      }>;
+    dni: Attribute.String &
+      Attribute.Required &
+      Attribute.Private &
+      Attribute.SetMinMaxLength<{
+        minLength: 10;
+        maxLength: 10;
+      }>;
+    phone: Attribute.BigInteger &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          min: '9999999999';
+          max: '9999999999';
+        },
+        string
+      >;
+    address: Attribute.RichText & Attribute.Required;
+    status: Attribute.Enumeration<['active', 'inactive']> & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::client.client',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::client.client',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiConfigurationConfiguration extends Schema.CollectionType {
+  collectionName: 'configurations';
+  info: {
+    singularName: 'configuration';
+    pluralName: 'configurations';
+    displayName: 'configuration';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    ruc: Attribute.String &
+      Attribute.Required &
+      Attribute.SetMinMaxLength<{
+        minLength: 3;
+        maxLength: 20;
+      }>;
+    name: Attribute.String &
+      Attribute.Required &
+      Attribute.SetMinMaxLength<{
+        minLength: 3;
+        maxLength: 200;
+      }>;
+    phone: Attribute.BigInteger &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          min: '1111111111';
+          max: '9999999999';
+        },
+        string
+      >;
+    email: Attribute.Email & Attribute.Required & Attribute.Unique;
+    address: Attribute.RichText & Attribute.Required;
+    message: Attribute.RichText & Attribute.Required;
+    logo: Attribute.Media<'images', true>;
+    tax: Attribute.BigInteger & Attribute.Required;
+    invoice_amount: Attribute.BigInteger & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::configuration.configuration',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::configuration.configuration',
+      'oneToOne',
+      'admin::user'
+    > &
       Attribute.Private;
   };
 }
@@ -861,10 +1012,19 @@ export interface ApiCurrencyCurrency extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
-    symbol: Attribute.String & Attribute.Required;
-    name: Attribute.String & Attribute.Required;
-    date: Attribute.DateTime;
-    status: Attribute.Enumeration<['activo', 'inactivo']>;
+    symbol: Attribute.String &
+      Attribute.Required &
+      Attribute.SetMinMaxLength<{
+        minLength: 1;
+        maxLength: 15;
+      }>;
+    name: Attribute.String &
+      Attribute.Required &
+      Attribute.SetMinMaxLength<{
+        minLength: 5;
+        maxLength: 50;
+      }>;
+    status: Attribute.Enumeration<['active', 'inactive']> & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -883,58 +1043,92 @@ export interface ApiCurrencyCurrency extends Schema.CollectionType {
   };
 }
 
-export interface ApiCustomClientCustomClient extends Schema.CollectionType {
-  collectionName: 'custom_clients';
+export interface ApiDocumentDocument extends Schema.CollectionType {
+  collectionName: 'documents';
   info: {
-    singularName: 'custom-client';
-    pluralName: 'custom-clients';
-    displayName: 'custom_user';
+    singularName: 'document';
+    pluralName: 'documents';
+    displayName: 'Document';
     description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    username: Attribute.String &
+    document: Attribute.String &
       Attribute.Required &
-      Attribute.Unique &
       Attribute.SetMinMaxLength<{
         minLength: 3;
-        maxLength: 16;
+        maxLength: 50;
       }>;
-    name: Attribute.String &
-      Attribute.Required &
-      Attribute.SetMinMaxLength<{
-        minLength: 5;
-        maxLength: 255;
-      }>;
-    last_name: Attribute.String &
-      Attribute.Required &
-      Attribute.SetMinMaxLength<{
-        minLength: 5;
-        maxLength: 255;
-      }>;
-    email: Attribute.Email & Attribute.Required & Attribute.Unique;
-    password: Attribute.Password & Attribute.Required;
-    telefono: Attribute.BigInteger & Attribute.Required;
-    direccion: Attribute.RichText & Attribute.Required;
-    perfil: Attribute.Media<'images', true> & Attribute.Required;
-    creation_date: Attribute.Date;
-    estado: Attribute.Enumeration<['activo', 'inactivo']> & Attribute.Required;
+    status: Attribute.Enumeration<['active', 'inactive']> & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
-      'api::custom-client.custom-client',
+      'api::document.document',
       'oneToOne',
       'admin::user'
     > &
       Attribute.Private;
     updatedBy: Attribute.Relation<
-      'api::custom-client.custom-client',
+      'api::document.document',
       'oneToOne',
       'admin::user'
     > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiRentRent extends Schema.CollectionType {
+  collectionName: 'rents';
+  info: {
+    singularName: 'rent';
+    pluralName: 'rents';
+    displayName: 'Rent';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    price_day: Attribute.Decimal &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    payment: Attribute.Decimal &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    number_days: Attribute.Integer &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    loan_date: Attribute.Date & Attribute.Required;
+    hour: Attribute.Time & Attribute.Required;
+    date_return: Attribute.Date & Attribute.Required;
+    observation: Attribute.RichText & Attribute.Required;
+    status: Attribute.Enumeration<['active', 'inactive']> &
+      Attribute.Required &
+      Attribute.DefaultTo<'active'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::rent.rent', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::rent.rent', 'oneToOne', 'admin::user'> &
       Attribute.Private;
   };
 }
@@ -945,14 +1139,19 @@ export interface ApiTypeCarTypeCar extends Schema.CollectionType {
     singularName: 'type-car';
     pluralName: 'type-cars';
     displayName: 'type_car';
+    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    type_car: Attribute.String & Attribute.Required;
-    status: Attribute.Enumeration<['activo', 'inactivo']>;
-    date: Attribute.DateTime;
+    type: Attribute.String &
+      Attribute.Required &
+      Attribute.SetMinMaxLength<{
+        minLength: 5;
+        maxLength: 100;
+      }>;
+    status: Attribute.Enumeration<['active', 'inactive']> & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -985,14 +1184,17 @@ declare module '@strapi/types' {
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
+      'plugin::i18n.locale': PluginI18NLocale;
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
-      'plugin::i18n.locale': PluginI18NLocale;
       'api::brand.brand': ApiBrandBrand;
       'api::car.car': ApiCarCar;
+      'api::client.client': ApiClientClient;
+      'api::configuration.configuration': ApiConfigurationConfiguration;
       'api::currency.currency': ApiCurrencyCurrency;
-      'api::custom-client.custom-client': ApiCustomClientCustomClient;
+      'api::document.document': ApiDocumentDocument;
+      'api::rent.rent': ApiRentRent;
       'api::type-car.type-car': ApiTypeCarTypeCar;
     }
   }

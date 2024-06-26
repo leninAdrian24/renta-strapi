@@ -4,8 +4,7 @@
   "info": {
     "singularName": "brand",
     "pluralName": "brands",
-    "displayName": "brand",
-    "description": ""
+    "displayName": "brand"
   },
   "options": {
     "draftAndPublish": true
@@ -14,18 +13,16 @@
   "attributes": {
     "brand": {
       "type": "string",
-      "required": true
+      "required": true,
+      "maxLength": 50,
+      "minLength": 3
     },
     "status": {
       "type": "enumeration",
       "enum": [
-        "activo",
-        "inactivo"
+        "active",
+        "inactive"
       ]
-    },
-    "date": {
-      "type": "datetime",
-      "required": true
     }
   }
 }

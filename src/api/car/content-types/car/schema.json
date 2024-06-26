@@ -12,13 +12,17 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "placa": {
+    "plate": {
       "type": "string",
-      "required": true,
-      "regex": "^[A-Z]{2}[0-9]{2}[A-Z0-9]{3}$"
+      "minLength": 3,
+      "maxLength": 20,
+      "required": true
     },
     "model": {
       "type": "string",
+      "minLength": 3,
+      "maxLength": 50,
+      "private": true,
       "required": true
     },
     "image": {
@@ -29,16 +33,13 @@
         "images"
       ]
     },
-    "date": {
-      "type": "datetime"
-    },
-    "estado": {
+    "status": {
       "type": "enumeration",
       "enum": [
-        "activo",
-        "inactivo"
+        "active",
+        "inactive"
       ],
-      "default": "activo"
+      "required": true
     }
   }
 }
