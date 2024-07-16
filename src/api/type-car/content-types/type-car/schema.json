@@ -24,7 +24,14 @@
         "active",
         "inactive"
       ],
-      "required": true
+      "required": true,
+      "default": "active"
+    },
+    "cars": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::car.car",
+      "mappedBy": "type_car"
     }
   }
 }

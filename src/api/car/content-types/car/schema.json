@@ -12,17 +12,15 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "price_day": {
+      "type": "biginteger",
+      "required": true,
+      "min": "0"
+    },
     "plate": {
       "type": "string",
       "minLength": 3,
       "maxLength": 20,
-      "required": true
-    },
-    "model": {
-      "type": "string",
-      "minLength": 3,
-      "maxLength": 50,
-      "private": true,
       "required": true
     },
     "image": {
@@ -39,7 +37,48 @@
         "active",
         "inactive"
       ],
+      "required": true,
+      "default": "active"
+    },
+    "brand": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::brand.brand",
+      "inversedBy": "cars"
+    },
+    "type_car": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::type-car.type-car",
+      "inversedBy": "cars"
+    },
+    "rents": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::rent.rent",
+      "mappedBy": "cars"
+    },
+    "model": {
+      "type": "string",
+      "required": true,
+      "maxLength": 50,
+      "minLength": 3
+    },
+    "date": {
+      "type": "datetime",
       "required": true
+    },
+    "availability": {
+      "type": "enumeration",
+      "enum": [
+        "available",
+        "reserved",
+        "returned",
+        "rented",
+        "under maintenance",
+        "out of service"
+      ],
+      "default": "available"
     }
   }
 }

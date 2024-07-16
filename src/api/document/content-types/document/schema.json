@@ -24,6 +24,17 @@
         "active",
         "inactive"
       ],
+      "required": true,
+      "default": "active"
+    },
+    "rent": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::rent.rent",
+      "inversedBy": "documents"
+    },
+    "date": {
+      "type": "datetime",
       "required": true
     }
   }

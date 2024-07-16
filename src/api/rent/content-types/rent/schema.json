@@ -12,11 +12,6 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "price_day": {
-      "type": "decimal",
-      "required": true,
-      "min": 0
-    },
     "payment": {
       "type": "decimal",
       "min": 0,
@@ -31,10 +26,6 @@
       "type": "date",
       "required": true
     },
-    "hour": {
-      "type": "time",
-      "required": true
-    },
     "date_return": {
       "type": "date",
       "required": true
@@ -43,14 +34,51 @@
       "type": "richtext",
       "required": true
     },
+    "client": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::client.client",
+      "inversedBy": "rents"
+    },
+    "documents": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::document.document",
+      "mappedBy": "rent"
+    },
+    "cars": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::car.car",
+      "inversedBy": "rents"
+    },
+    "total": {
+      "type": "decimal",
+      "required": true
+    },
     "status": {
       "type": "enumeration",
       "enum": [
         "active",
-        "inactive"
-      ],
-      "required": true,
-      "default": "active"
+        "completed",
+        "cancelled"
+      ]
+    },
+    "payment_status": {
+      "type": "enumeration",
+      "enum": [
+        "paid",
+        "pending",
+        "partially Paid",
+        "cancelled"
+      ]
+    },
+    "rent_type": {
+      "type": "enumeration",
+      "enum": [
+        "rented",
+        "reserved"
+      ]
     }
   }
 }

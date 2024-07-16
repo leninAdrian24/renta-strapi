@@ -83,12 +83,6 @@
       "min": "1111111111",
       "max": "9999999999"
     },
-    "address": {
-      "type": "string",
-      "minLength": 5,
-      "maxLength": 255,
-      "required": true
-    },
     "profile": {
       "type": "media",
       "multiple": true,
@@ -96,6 +90,22 @@
       "allowedTypes": [
         "images"
       ]
+    },
+    "date": {
+      "type": "datetime",
+      "required": false
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "inactive",
+      "required": false
+    },
+    "address": {
+      "type": "richtext"
     }
   }
 }

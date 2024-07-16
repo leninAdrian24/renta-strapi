@@ -4,7 +4,8 @@
   "info": {
     "singularName": "brand",
     "pluralName": "brands",
-    "displayName": "brand"
+    "displayName": "brand",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -15,14 +16,27 @@
       "type": "string",
       "required": true,
       "maxLength": 50,
-      "minLength": 3
+      "minLength": 3,
+      "unique": true
     },
     "status": {
       "type": "enumeration",
       "enum": [
         "active",
         "inactive"
-      ]
+      ],
+      "required": true,
+      "default": "active"
+    },
+    "cars": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::car.car",
+      "mappedBy": "brand"
+    },
+    "date": {
+      "type": "datetime",
+      "required": true
     }
   }
 }

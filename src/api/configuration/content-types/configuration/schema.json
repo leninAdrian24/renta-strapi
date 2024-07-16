@@ -58,6 +58,12 @@
     "invoice_amount": {
       "type": "biginteger",
       "required": true
+    },
+    "currencies": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::currency.currency",
+      "inversedBy": "configurations"
     }
   }
 }

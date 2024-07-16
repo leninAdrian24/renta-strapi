@@ -791,13 +791,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
         },
         string
       >;
-    address: Attribute.String &
-      Attribute.Required &
-      Attribute.SetMinMaxLength<{
-        minLength: 5;
-        maxLength: 255;
-      }>;
     profile: Attribute.Media<'images', true>;
+    date: Attribute.DateTime;
+    status: Attribute.Enumeration<['active', 'inactive']> &
+      Attribute.DefaultTo<'inactive'>;
+    address: Attribute.RichText;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -821,6 +819,7 @@ export interface ApiBrandBrand extends Schema.CollectionType {
     singularName: 'brand';
     pluralName: 'brands';
     displayName: 'brand';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -828,11 +827,16 @@ export interface ApiBrandBrand extends Schema.CollectionType {
   attributes: {
     brand: Attribute.String &
       Attribute.Required &
+      Attribute.Unique &
       Attribute.SetMinMaxLength<{
         minLength: 3;
         maxLength: 50;
       }>;
-    status: Attribute.Enumeration<['active', 'inactive']>;
+    status: Attribute.Enumeration<['active', 'inactive']> &
+      Attribute.Required &
+      Attribute.DefaultTo<'active'>;
+    cars: Attribute.Relation<'api::brand.brand', 'oneToMany', 'api::car.car'>;
+    date: Attribute.DateTime & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -863,21 +867,49 @@ export interface ApiCarCar extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
+    price_day: Attribute.BigInteger &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          min: '0';
+        },
+        string
+      >;
     plate: Attribute.String &
       Attribute.Required &
       Attribute.SetMinMaxLength<{
         minLength: 3;
         maxLength: 20;
       }>;
+    image: Attribute.Media<'images', true>;
+    status: Attribute.Enumeration<['active', 'inactive']> &
+      Attribute.Required &
+      Attribute.DefaultTo<'active'>;
+    brand: Attribute.Relation<'api::car.car', 'manyToOne', 'api::brand.brand'>;
+    type_car: Attribute.Relation<
+      'api::car.car',
+      'manyToOne',
+      'api::type-car.type-car'
+    >;
+    rents: Attribute.Relation<'api::car.car', 'manyToMany', 'api::rent.rent'>;
     model: Attribute.String &
       Attribute.Required &
-      Attribute.Private &
       Attribute.SetMinMaxLength<{
         minLength: 3;
         maxLength: 50;
       }>;
-    image: Attribute.Media<'images', true>;
-    status: Attribute.Enumeration<['active', 'inactive']> & Attribute.Required;
+    date: Attribute.DateTime & Attribute.Required;
+    availability: Attribute.Enumeration<
+      [
+        'available',
+        'reserved',
+        'returned',
+        'rented',
+        'under maintenance',
+        'out of service'
+      ]
+    > &
+      Attribute.DefaultTo<'available'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -902,29 +934,35 @@ export interface ApiClientClient extends Schema.CollectionType {
   attributes: {
     name: Attribute.String &
       Attribute.Required &
-      Attribute.Private &
       Attribute.SetMinMaxLength<{
         minLength: 3;
         maxLength: 255;
       }>;
     dni: Attribute.String &
       Attribute.Required &
-      Attribute.Private &
       Attribute.SetMinMaxLength<{
-        minLength: 10;
+        minLength: 6;
         maxLength: 10;
       }>;
     phone: Attribute.BigInteger &
       Attribute.Required &
       Attribute.SetMinMax<
         {
-          min: '9999999999';
+          min: '1111111111';
           max: '9999999999';
         },
         string
       >;
     address: Attribute.RichText & Attribute.Required;
-    status: Attribute.Enumeration<['active', 'inactive']> & Attribute.Required;
+    status: Attribute.Enumeration<['active', 'inactive']> &
+      Attribute.Required &
+      Attribute.DefaultTo<'active'>;
+    rents: Attribute.Relation<
+      'api::client.client',
+      'oneToMany',
+      'api::rent.rent'
+    >;
+    date: Attribute.DateTime & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -982,6 +1020,11 @@ export interface ApiConfigurationConfiguration extends Schema.CollectionType {
     logo: Attribute.Media<'images', true>;
     tax: Attribute.BigInteger & Attribute.Required;
     invoice_amount: Attribute.BigInteger & Attribute.Required;
+    currencies: Attribute.Relation<
+      'api::configuration.configuration',
+      'manyToMany',
+      'api::currency.currency'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1021,10 +1064,17 @@ export interface ApiCurrencyCurrency extends Schema.CollectionType {
     name: Attribute.String &
       Attribute.Required &
       Attribute.SetMinMaxLength<{
-        minLength: 5;
+        minLength: 3;
         maxLength: 50;
       }>;
-    status: Attribute.Enumeration<['active', 'inactive']> & Attribute.Required;
+    status: Attribute.Enumeration<['active', 'inactive']> &
+      Attribute.Required &
+      Attribute.DefaultTo<'active'>;
+    configurations: Attribute.Relation<
+      'api::currency.currency',
+      'manyToMany',
+      'api::configuration.configuration'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1061,7 +1111,15 @@ export interface ApiDocumentDocument extends Schema.CollectionType {
         minLength: 3;
         maxLength: 50;
       }>;
-    status: Attribute.Enumeration<['active', 'inactive']> & Attribute.Required;
+    status: Attribute.Enumeration<['active', 'inactive']> &
+      Attribute.Required &
+      Attribute.DefaultTo<'active'>;
+    rent: Attribute.Relation<
+      'api::document.document',
+      'manyToOne',
+      'api::rent.rent'
+    >;
+    date: Attribute.DateTime & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1092,14 +1150,6 @@ export interface ApiRentRent extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
-    price_day: Attribute.Decimal &
-      Attribute.Required &
-      Attribute.SetMinMax<
-        {
-          min: 0;
-        },
-        number
-      >;
     payment: Attribute.Decimal &
       Attribute.Required &
       Attribute.SetMinMax<
@@ -1117,12 +1167,25 @@ export interface ApiRentRent extends Schema.CollectionType {
         number
       >;
     loan_date: Attribute.Date & Attribute.Required;
-    hour: Attribute.Time & Attribute.Required;
     date_return: Attribute.Date & Attribute.Required;
     observation: Attribute.RichText & Attribute.Required;
-    status: Attribute.Enumeration<['active', 'inactive']> &
-      Attribute.Required &
-      Attribute.DefaultTo<'active'>;
+    client: Attribute.Relation<
+      'api::rent.rent',
+      'manyToOne',
+      'api::client.client'
+    >;
+    documents: Attribute.Relation<
+      'api::rent.rent',
+      'oneToMany',
+      'api::document.document'
+    >;
+    cars: Attribute.Relation<'api::rent.rent', 'manyToMany', 'api::car.car'>;
+    total: Attribute.Decimal & Attribute.Required;
+    status: Attribute.Enumeration<['active', 'completed', 'cancelled']>;
+    payment_status: Attribute.Enumeration<
+      ['paid', 'pending', 'partially Paid', 'cancelled']
+    >;
+    rent_type: Attribute.Enumeration<['rented', 'reserved']>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1151,7 +1214,14 @@ export interface ApiTypeCarTypeCar extends Schema.CollectionType {
         minLength: 5;
         maxLength: 100;
       }>;
-    status: Attribute.Enumeration<['active', 'inactive']> & Attribute.Required;
+    status: Attribute.Enumeration<['active', 'inactive']> &
+      Attribute.Required &
+      Attribute.DefaultTo<'active'>;
+    cars: Attribute.Relation<
+      'api::type-car.type-car',
+      'oneToMany',
+      'api::car.car'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

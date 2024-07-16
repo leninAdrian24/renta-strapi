@@ -16,20 +16,18 @@
       "type": "string",
       "minLength": 3,
       "maxLength": 255,
-      "private": true,
       "required": true
     },
     "dni": {
       "type": "string",
       "required": true,
-      "minLength": 10,
-      "maxLength": 10,
-      "private": true
+      "minLength": 6,
+      "maxLength": 10
     },
     "phone": {
       "type": "biginteger",
       "required": true,
-      "min": "9999999999",
+      "min": "1111111111",
       "max": "9999999999"
     },
     "address": {
@@ -42,6 +40,17 @@
         "active",
         "inactive"
       ],
+      "required": true,
+      "default": "active"
+    },
+    "rents": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::rent.rent",
+      "mappedBy": "client"
+    },
+    "date": {
+      "type": "datetime",
       "required": true
     }
   }
